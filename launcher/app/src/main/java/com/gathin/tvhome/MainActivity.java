@@ -126,6 +126,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private long idleClockMs;
     /** Back on Home opens ClockActivity (config.xml, back_opens_clock). */
     private boolean backOpensClock;
+    /** Back on Home moves focus to the first app (config.xml, back_to_first_app). */
+    private boolean backToFirstApp;
     private final Runnable showIdleClock = () -> startActivity(new Intent(this, ClockActivity.class));
     private String liveTvAction;
     private String liveTvInputId;
@@ -489,6 +491,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         homeIgnoreChannelKeys = cfg.homeIgnoreChannelKeys;
         idleClockMs = cfg.homeIdleClockMinutes * MINUTE_MS;
         backOpensClock = cfg.backOpensClock;
+        backToFirstApp = cfg.backToFirstApp;
         bootToLiveTv = cfg.bootToLiveTv;
         bootInputId = LaunchActions.inputId(cfg.launchActions.get(cfg.liveTvPackage));
         openOnStartChoice = cfg.openOnStartChoice;
@@ -1777,6 +1780,15 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     @SuppressWarnings("deprecation")
     public void onBackPressed() {
+        if (isFinishing() || isDestroyed()) return;
+        if (backToFirstApp && adapter != null) {
+            int pos = focusedTilePosition();
+            int first = adapter.appCount() > 0 ? adapter.focusablePosition(0) : 0;
+            if (pos != first) {
+                focusTile(first);
+                return;
+            }
+        }
         // Home screen: Back goes nowhere, unless back_opens_clock is on.
         if (backOpensClock) startActivity(new Intent(this, ClockActivity.class));
     }

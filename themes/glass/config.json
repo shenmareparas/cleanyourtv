@@ -1,12 +1,13 @@
 {
   "dock_apps": [
-    "com.netflix.ninja",
     "com.google.android.youtube.tv",
-    "com.amazon.amazonvideo.livingroom",
-    "com.disney.disneyplus",
-    "com.wbd.stream",
-    "com.apple.atve.androidtv.appletv"
+    "in.startv.hotstar",
+    "org.videolan.vlc"
   ],
+  "hidden_apps": [
+    "com.sony.dtv.tvx"
+  ],
+  "live_tv_package": "",
   "background_color": "#090C14",
   "wallpaper": true,
   "cinematic_home": true,
@@ -15,5 +16,13 @@
   "app_glow": true,
   "glow_style": "horizon",
   "focus_overshoot": false,
-  "advanced_effects": true
+  "advanced_effects": true,
+  "settings_key_panel": true,
+  "settings_key_keycodes": [
+    82,
+    83,
+    176
+  ],
+  "restore_key_services": true,
+  "back_to_first_app": true
 }

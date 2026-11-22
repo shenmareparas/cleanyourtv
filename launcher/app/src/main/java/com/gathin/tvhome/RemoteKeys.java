@@ -358,6 +358,7 @@ final class RemoteKeys {
         switch (target) {
             case "back": case "home": case "recents": case "mute": case "sleep":
             case "screensaver": case "settings": case "wifi": case "library": case "ignore":
+            case "volumeup": case "volumedown":
                 return true;
             default:
                 return false;
@@ -377,6 +378,18 @@ final class RemoteKeys {
             return true;
         }
         switch (target) {
+            case "volumeup": {
+                AudioManager audio = ctx.getSystemService(AudioManager.class);
+                if (audio != null) audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                break;
+            }
+            case "volumedown": {
+                AudioManager audio = ctx.getSystemService(AudioManager.class);
+                if (audio != null) audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                break;
+            }
             case "mute":
                 // The media stream a TV plays everything on, with its own volume bar, as a remote's mute button would.
                 AudioManager audio = ctx.getSystemService(AudioManager.class);

@@ -3,8 +3,10 @@ package com.gathin.tvhome;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +42,7 @@ public final class QuickSettingsActivity extends Activity {
         }
         findViewById(R.id.scrim).setOnClickListener(v -> finish());
         LinearLayout rows = findViewById(R.id.rows);
+        addVolumeRow(rows);
         addRow(rows, R.drawable.ic_settings, R.string.tv_settings, 0, SystemSettings.intent(this, Settings.ACTION_SETTINGS));
         addRow(rows, R.drawable.ic_picture, R.string.quick_picture, 0, SystemSettings.displayIntent(this));
         addRow(rows, R.drawable.ic_wifi, R.string.quick_network, 0, SystemSettings.intent(this, Settings.ACTION_WIFI_SETTINGS));
@@ -84,5 +87,44 @@ public final class QuickSettingsActivity extends Activity {
             finish();
         });
         rows.addView(row);
+    }
+
+    private void addVolumeRow(LinearLayout rows) {
+        AudioManager audio = getSystemService(AudioManager.class);
+        if (audio == null) return;
+        View row = getLayoutInflater().inflate(R.layout.item_input, rows, false);
+        ((ImageView) row.findViewById(R.id.icon)).setImageResource(R.drawable.ic_volume);
+        ((TextView) row.findViewById(R.id.title)).setText(R.string.volume);
+        row.findViewById(R.id.dot).setVisibility(View.GONE);
+        TextView status = row.findViewById(R.id.status);
+        updateVolumeStatus(status, audio);
+
+        row.setOnClickListener(v -> {
+            audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+            updateVolumeStatus(status, audio);
+        });
+
+        row.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
+            if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                updateVolumeStatus(status, audio);
+                return true;
+            } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                updateVolumeStatus(status, audio);
+                return true;
+            }
+            return false;
+        });
+
+        rows.addView(row);
+    }
+
+    private void updateVolumeStatus(TextView status, AudioManager audio) {
+        int max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int current = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int pct = max > 0 ? (int) Math.round((current * 100.0) / max) : 0;
+        status.setText("◀  " + pct + "%  ▶");
     }
 }

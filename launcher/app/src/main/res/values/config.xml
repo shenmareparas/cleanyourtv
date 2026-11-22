@@ -185,11 +185,14 @@
          a temporary `Log.d` in the helper's `onKeyEvent`: `getKeyCode()`, `getScanCode()`, `getDeviceId()`, read
          after a HOME_KEY_SERVICE=1 rebuild. Leave empty to omit. -->
     <integer-array name="settings_key_keycodes">
+        <item>82</item>
+        <item>83</item>
+        <item>176</item>
     </integer-array>
     <!-- What those Settings buttons open: false, the TV's Settings; true, a small glass panel at the top right
          with TV settings, Display, Network, Apps (re-enable an app) and Launcher settings, over whatever is on screen.
          Both keys can also be set from a theme's config.json ("settings_key_keycodes": [83]). -->
-    <bool name="settings_key_panel">false</bool>
+    <bool name="settings_key_panel">true</bool>
     <!-- true: those Settings buttons clear the TV Settings task before opening Settings (with settings_key_panel off).
          On some MediaTek boards KEYCODE_SETTINGS is also a global key: com.mediatek.tv.service opens Display & Sound in
          the same task before the helper sees the press, so Settings stacked on it and Back landed there (Skyworth
@@ -200,7 +203,7 @@
          off the enabled list. true: Home puts the helpers that were running back when it starts; one turned off in
          Settings stays off. Needs WRITE_SECURE_SETTINGS, which build-and-install grants with RESTORE_KEY_SERVICES=1
          (-RestoreKeyServices on Windows) and takes back on an install without it. Can also be set with "restore_key_services": true in a theme's config.json. -->
-    <bool name="restore_key_services">false</bool>
+    <bool name="restore_key_services">true</bool>
 
     <!-- More remote buttons that open the input switcher, by Android keycode (INPUT_KEY_SERVICE=1
          build-and-install.sh; KEYCODE_TV always does). For buttons only a disabled app answered: the Xiaomi
@@ -228,7 +231,7 @@
          switches to that TV input, e.g. scan:227:input:com.tcl.tvinput/.passthroughinput.TvPassThroughService/HW1413744640
          for HDMI 3 on a TCL Smart TV Pro; the ids are in `tools/tv.py 'dumpsys tv_input'` (hdmi_port=N under
          TvInputHardwareInfo). An action word in place of a package runs that action instead: back, home, recents,
-         mute (toggles the sound, with the TV's volume bar), sleep (standby, Android 9 and later), screensaver (the
+         mute (toggles the sound, with the TV's volume bar), volumeup, volumedown (steps the media stream volume up or down, with the volume bar), sleep (standby, Android 9 and later), screensaver (the
          one chosen in the TV's settings, or the launcher's clock), settings, wifi, library (Home with the App
          library open; with app_library off it only brings Home forward, so a remote's Apps button, which sends
          284 KEYCODE_ALL_APPS, can open it: 284:library) or ignore (swallows the button: it
@@ -543,6 +546,9 @@
          home_idle_clock_minutes). Back keeps working as usual inside apps and Settings; only Home's own Back
          press changes. Off by default (Back does nothing on Home); a theme can set "back_opens_clock": true. -->
     <bool name="back_opens_clock">false</bool>
+    <!-- Back on the Home screen moves focus to the first app when another item is selected.
+         Off by default (Back does nothing on Home); a theme can set "back_to_first_app": true. -->
+    <bool name="back_to_first_app">false</bool>
     <!-- The clock screensaver (Home idle clock and the system screensaver) over Home's wallpaper instead of black with
          a coloured glow. The clock still moves every minute. Can also be set with "clock_wallpaper" in a theme. -->
     <bool name="clock_wallpaper">false</bool>
